@@ -43,3 +43,27 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.pub-cache/
+
+# Android generated files
+android/.gradle/
+android/app/build/
+android/build/
+
+# Windows generated files
+windows/flutter/ephemeral/
+
+# Backup files
+windows_bak/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
