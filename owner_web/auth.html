@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySpace Owner - Login</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Side: Branding -->
+        <div class="auth-branding">
+            <div class="branding-content">
+                <i class="fa-solid fa-award branding-icon"></i>
+                <h1>StudySpace<br>For Owners</h1>
+                <p>Manage your space, attract more students, and grow your business with our intuitive dashboard.</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Forms -->
+        <div class="auth-forms">
+            <div class="form-wrapper" id="login-wrapper">
+                <h2>Welcome back</h2>
+                <p class="subtitle">Enter your credentials to access your dashboard.</p>
+                
+                <form id="login-form" novalidate>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="owner@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+                
+                <p class="toggle-text">Don't have an account? <span class="toggle-link" id="go-to-register">Register your shop</span></p>
+            </div>
+
+            <div class="form-wrapper" id="register-wrapper" style="display: none;">
+                <h2>Register your shop</h2>
+                <p class="subtitle">Join StudySpace and start receiving bookings today.</p>
+                
+                <form id="register-form" novalidate>
+                    <div class="form-group">
+                        <label>Email or Mobile phone</label>
+                        <input type="text" id="reg-contact" class="form-control" placeholder="Email or Phone">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="reg-confirm-password" class="form-control" placeholder="Confirm Password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Next: Shop Details</button>
+                </form>
+                
+                <p class="toggle-text">Already have an account? <span class="toggle-link" id="go-to-login">Log In</span></p>
+            </div>
+        </div>
+    </div>
+    <!-- Shop Details Modal -->
+    <div class="modal" id="shop-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Shop Details</h2>
+            </div>
+            <div class="modal-body">
+                <form id="shop-details-form" novalidate>
+                    <div class="form-group">
+                        <label>Name of the shop</label>
+                        <input type="text" id="reg-shop-name" class="form-control" placeholder="e.g. The Study Cafe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Available Seats</label>
+                        <input type="number" id="reg-seats" class="form-control" placeholder="Total seats" min="1">
+                    </div>
+
+                    <div class="form-row amenities-row">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="reg-wifi">
+                            <label for="reg-wifi">Free Wi-Fi</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="reg-outlets">
+                            <label for="reg-outlets">Power Outlets</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group verification-group">
+                        <label>Business Verification</label>
+                        <div class="verification-box">
+                            <div class="verification-content">
+                                <i class="fa-solid fa-file-shield verification-icon"></i>
+                                <div class="verification-text">
+                                    <strong>Business Permit</strong>
+                                    <p>Scan or upload your Mayor's Permit</p>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline btn-scan" id="scan-permit-btn">
+                                <i class="fa-solid fa-qrcode"></i> Scan
+                            </button>
+                        </div>
+                        <div id="verification-status" style="display: none;">
+                            <div class="status-badge">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                <span id="status-text">Analyzing Authenticity...</span>
+                            </div>
+                            <div class="extracted-data" id="extracted-data" style="display: none;">
+                                <div class="data-item"><strong>Permit ID:</strong> <span id="mock-permit-id">BP-2024-8842</span></div>
+                                <div class="data-item"><strong>Validity:</strong> <span>Dec 31, 2026</span></div>
+                            </div>
+                        </div>
+                        <input type="file" id="reg-permit" class="form-control file-input" accept=".pdf,.png,.jpg,.jpeg" style="margin-top: 10px;">
+                        <small class="form-help">Upload a clear copy for legitimacy check.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Menu</label>
+                        <input type="file" id="reg-menu" class="form-control file-input" accept=".pdf,.png,.jpg,.jpeg">
+                        <small class="form-help">Upload a PDF or image of your menu.</small>
+                    </div>
+
+                    <div class="modal-footer" style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn btn-text" id="close-modal-btn">Back</button>
+                        <button type="submit" class="btn btn-primary">Complete Registration</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="auth.js"></script>
+</body>
+</html>

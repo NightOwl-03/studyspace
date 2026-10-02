@@ -1,0 +1,1002 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:fl_chart/fl_chart.dart';
+
+class AnalyticsSection extends StatelessWidget {
+  const AnalyticsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Analytics & Trends',
+            style: GoogleFonts.inter(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          const SizedBox(height: 24),
+          _buildChartCard(
+            context,
+            title: 'Weekly Reservations',
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: 50,
+                barTouchData: BarTouchData(enabled: false),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        const style = TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12);
+                        Widget text;
+                        switch (value.toInt()) {
+                          case 0: text = const Text('Mon', style: style); break;
+                          case 1: text = const Text('Tue', style: style); break;
+                          case 2: text = const Text('Wed', style: style); break;
+                          case 3: text = const Text('Thu', style: style); break;
+                          case 4: text = const Text('Fri', style: style); break;
+                          case 5: text = const Text('Sat', style: style); break;
+                          case 6: text = const Text('Sun', style: style); break;
+                          default: text = const Text('', style: style); break;
+                        }
+                        return SideTitleWidget(axisSide: meta.axisSide, space: 4, child: text);
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 28,
+                      getTitlesWidget: (value, meta) {
+                        return Text(value.toInt().toString(), style: const TextStyle(color: Colors.grey, fontSize: 12));
+                      },
+                    ),
+                  ),
+                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(show: false),
+                barGroups: [
+                  _makeGroupData(0, 15, Colors.blue),
+                  _makeGroupData(1, 22, Colors.blue),
+                  _makeGroupData(2, 18, Colors.blue),
+                  _makeGroupData(3, 30, Colors.blue),
+                  _makeGroupData(4, 45, Colors.blue),
+                  _makeGroupData(5, 48, Colors.blue),
+                  _makeGroupData(6, 35, Colors.blue),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          _buildChartCard(
+            context,
+            title: 'Peak Hours (Today)',
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(show: true, drawVerticalLine: false),
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 22,
+                      getTitlesWidget: (value, meta) {
+                        return Text('${value.toInt()}:00', style: const TextStyle(color: Colors.grey, fontSize: 12));
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true, reservedSize: 28),
+                  ),
+                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                borderData: FlBorderData(show: false),
+                minX: 8,
+                maxX: 22,
+                minY: 0,
+                maxY: 30,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: const [
+                      FlSpot(8, 2),
+                      FlSpot(10, 8),
+                      FlSpot(12, 25),
+                      FlSpot(14, 15),
+                      FlSpot(16, 10),
+                      FlSpot(18, 28),
+                      FlSpot(20, 22),
+                      FlSpot(22, 5),
+                    ],
+                    isCurved: true,
+                    color: Colors.green,
+                    barWidth: 4,
+                    isStrokeCapRound: true,
+                    dotData: FlDotData(show: false),
+                    belowBarData: BarAreaData(show: true, color: Colors.green.withValues(alpha: 0.2)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChartCard(BuildContext context, {required String title, required Widget child}) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 2, blurRadius: 8, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey.shade800),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            height: 250,
+            width: double.infinity,
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  BarChartGroupData _makeGroupData(int x, double y, Color barColor) {
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: y,
+          color: barColor,
+          width: 16,
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class OverviewSection extends StatelessWidget {
+  const OverviewSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Dashboard Overview',
+            style: GoogleFonts.inter(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          const SizedBox(height: 24),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              int crossAxisCount = constraints.maxWidth > 800 ? 3 : (constraints.maxWidth > 500 ? 2 : 1);
+              return GridView.count(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                shrinkWrap: true,
+                childAspectRatio: 2.5,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildMetricCard(
+                    context,
+                    title: 'Total Seats Reserved',
+                    value: '142',
+                    icon: Icons.chair_alt,
+                    color: Colors.blue.shade600,
+                  ),
+                  _buildMetricCard(
+                    context,
+                    title: 'Today\'s Reservations',
+                    value: '28',
+                    icon: Icons.calendar_today,
+                    color: Colors.green.shade600,
+                  ),
+                  _buildMetricCard(
+                    context,
+                    title: 'Available Capacity',
+                    value: '68%',
+                    icon: Icons.pie_chart_outline,
+                    color: Colors.orange.shade600,
+                  ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 32),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withValues(alpha: 0.1),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Live Seat Occupancy',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: const LinearProgressIndicator(
+                    value: 0.32,
+                    minHeight: 24,
+                    backgroundColor: Color(0xFFE0E0E0),
+                    color: Color(0xFF43A047),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '32% Occupied (16/50 seats)',
+                      style: GoogleFonts.inter(color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      '68% Available',
+                      style: GoogleFonts.inter(color: Colors.green.shade600, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: GoogleFonts.inter(
+                    fontSize: 24,
+                    color: Colors.grey.shade900,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'analytics_section.dart';
+import 'overview_section.dart';
+import 'reservation_list_section.dart';
+import 'reviews_section.dart';
+import 'table_management_section.dart';
+
+class OwnerDashboardScreen extends StatefulWidget {
+  const OwnerDashboardScreen({super.key});
+
+  @override
+  State<OwnerDashboardScreen> createState() => _OwnerDashboardScreenState();
+}
+
+class _OwnerDashboardScreenState extends State<OwnerDashboardScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _sections = [
+    const OverviewSection(),
+    const ReservationListSection(),
+    const ReviewsSection(),
+    const TableManagementSection(),
+    const AnalyticsSection(),
+  ];
+
+  final List<NavigationRailDestination> _navDestinations = const [
+    NavigationRailDestination(
+      icon: Icon(Icons.dashboard_outlined),
+      selectedIcon: Icon(Icons.dashboard),
+      label: Text('Overview'),
+    ),
+    NavigationRailDestination(
+      icon: Icon(Icons.calendar_month_outlined),
+      selectedIcon: Icon(Icons.calendar_month),
+      label: Text('Reservations'),
+    ),
+    NavigationRailDestination(
+      icon: Icon(Icons.star_outline),
+      selectedIcon: Icon(Icons.star),
+      label: Text('Reviews'),
+    ),
+    NavigationRailDestination(
+      icon: Icon(Icons.table_restaurant_outlined),
+      selectedIcon: Icon(Icons.table_restaurant),
+      label: Text('Tables'),
+    ),
+    NavigationRailDestination(
+      icon: Icon(Icons.bar_chart_outlined),
+      selectedIcon: Icon(Icons.bar_chart),
+      label: Text('Analytics'),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= 800) {
+          // Desktop / Tablet layout
+          return Scaffold(
+            backgroundColor: const Color(0xFFF5F7FA),
+            body: Row(
+              children: [
+                NavigationRail(
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  labelType: NavigationRailLabelType.all,
+                  backgroundColor: Colors.white,
+                  selectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
+                  selectedLabelTextStyle: GoogleFonts.inter(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  unselectedLabelTextStyle: GoogleFonts.inter(
+                    color: Colors.grey.shade600,
+                  ),
+                  destinations: _navDestinations,
+                  leading: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Column(
+                      children: [
+                        Icon(Icons.workspace_premium, size: 40, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Owner',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const VerticalDivider(thickness: 1, width: 1, color: Color(0xFFE0E0E0)),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(24.0),
+                    child: _sections[_selectedIndex],
+                  ),
+                ),
+              ],
+            ),
+          );
+        } else {
+          // Mobile Layout
+          return Scaffold(
+            backgroundColor: const Color(0xFFF5F7FA),
+            appBar: AppBar(
+              title: Text(
+                'Owner Dashboard',
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.grey.shade800),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.grey.shade800),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications_none),
+                  onPressed: () {
+                    // Notifications Panel could show here
+                  },
+                ),
+              ],
+            ),
+            drawer: Drawer(
+              backgroundColor: Colors.white,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Icon(Icons.workspace_premium, size: 48, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Text(
+                          'StudySpace Owner',
+                          style: GoogleFonts.inter(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ...List.generate(_navDestinations.length, (index) {
+                    final dest = _navDestinations[index];
+                    return ListTile(
+                      leading: _selectedIndex == index ? dest.selectedIcon : dest.icon,
+                      title: dest.label,
+                      selected: _selectedIndex == index,
+                      selectedColor: Theme.of(context).colorScheme.primary,
+                      onTap: () {
+                        setState(() {
+                          _selectedIndex = index;
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: _sections[_selectedIndex],
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class ReservationListSection extends StatefulWidget {
+  const ReservationListSection({super.key});
+
+  @override
+  State<ReservationListSection> createState() => _ReservationListSectionState();
+}
+
+class _ReservationListSectionState extends State<ReservationListSection> {
+  final List<Map<String, dynamic>> _allReservations = [
+    {'name': 'John Doe', 'contact': 'john@example.com', 'date': '2023-11-01', 'time': '18:00', 'seats': 2, 'status': 'Confirmed'},
+    {'name': 'Jane Smith', 'contact': 'jane@example.com', 'date': '2023-11-01', 'time': '19:30', 'seats': 4, 'status': 'Pending'},
+    {'name': 'Michael Lee', 'contact': 'michael@example.com', 'date': '2023-11-02', 'time': '12:00', 'seats': 3, 'status': 'Confirmed'},
+    {'name': 'Sarah Connor', 'contact': 'sarah@example.com', 'date': '2023-11-02', 'time': '20:00', 'seats': 6, 'status': 'Cancelled'},
+    {'name': 'David Kim', 'contact': 'david@example.com', 'date': '2023-11-03', 'time': '18:30', 'seats': 2, 'status': 'Confirmed'},
+  ];
+
+  List<Map<String, dynamic>> _filteredReservations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredReservations = List.from(_allReservations);
+  }
+
+  void _filterReservations(String query) {
+    setState(() {
+      _filteredReservations = _allReservations
+          .where((res) => res['name'].toLowerCase().contains(query.toLowerCase()) || res['contact'].toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Reservations',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade800,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.download, size: 18),
+              label: const Text('Export CSV'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: 'Search by name or email...',
+              border: InputBorder.none,
+              icon: Icon(Icons.search, color: Colors.grey),
+            ),
+            onChanged: _filterReservations,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 2, blurRadius: 8, offset: const Offset(0, 4)),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: DataTable(
+                    headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.grey.shade50),
+                    columns: const [
+                      DataColumn(label: Text('Customer', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text('Contact', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text('Date & Time', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text('Seats', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text('Status', style: TextStyle(fontWeight: FontWeight.bold))),
+                      DataColumn(label: Text('Actions', style: TextStyle(fontWeight: FontWeight.bold))),
+                    ],
+                    rows: _filteredReservations.map((res) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(res['name'], style: GoogleFonts.inter(fontWeight: FontWeight.w500))),
+                          DataCell(Text(res['contact'])),
+                          DataCell(Text('${res['date']} at ${res['time']}')),
+                          DataCell(Text(res['seats'].toString())),
+                          DataCell(
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: _getStatusColor(res['status']).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                res['status'],
+                                style: TextStyle(color: _getStatusColor(res['status']), fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Row(
+                              children: [
+                                IconButton(icon: const Icon(Icons.edit, size: 18, color: Colors.blue), onPressed: () {}),
+                                IconButton(icon: const Icon(Icons.cancel, size: 18, color: Colors.red), onPressed: () {}),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Confirmed': return Colors.green;
+      case 'Pending': return Colors.orange;
+      case 'Cancelled': return Colors.red;
+      default: return Colors.grey;
+    }
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class ReviewsSection extends StatelessWidget {
+  const ReviewsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> reviews = [
+      {
+        'customer': 'Alice Freeman',
+        'rating': 5,
+        'comment': 'Great atmosphere and perfect place to study! Will definitely come back.',
+        'time': '2 hours ago',
+      },
+      {
+        'customer': 'Mark Johnson',
+        'rating': 4,
+        'comment': 'Quiet and clean. The chairs could be a bit more comfortable though.',
+        'time': '1 day ago',
+      },
+      {
+        'customer': 'Emily Davis',
+        'rating': 5,
+        'comment': 'Love the fast Wi-Fi and the coffee shop nearby.',
+        'time': '3 days ago',
+      },
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Customer Reviews',
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey.shade800,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: ListView.builder(
+            itemCount: reviews.length,
+            itemBuilder: (context, index) {
+              final review = reviews[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey.withValues(alpha: 0.05), spreadRadius: 1, blurRadius: 4, offset: const Offset(0, 2)),
+                  ],
+                  border: Border.all(color: Colors.grey.shade100),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                              child: Text(
+                                review['customer'][0],
+                                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  review['customer'],
+                                  style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                Text(
+                                  review['time'],
+                                  style: GoogleFonts.inter(color: Colors.grey.shade500, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: List.generate(5, (starIndex) {
+                            return Icon(
+                              starIndex < review['rating'] ? Icons.star : Icons.star_border,
+                              color: Colors.amber,
+                              size: 20,
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      review['comment'],
+                      style: GoogleFonts.inter(color: Colors.grey.shade700, height: 1.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.reply, size: 18),
+                        label: const Text('Reply'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class TableManagementSection extends StatefulWidget {
+  const TableManagementSection({super.key});
+
+  @override
+  State<TableManagementSection> createState() => _TableManagementSectionState();
+}
+
+class _TableManagementSectionState extends State<TableManagementSection> {
+  // Mutable table data
+  final List<Map<String, dynamic>> _tables = [
+    {'id': 'T1', 'seats': 4, 'status': 'Available'},
+    {'id': 'T2', 'seats': 2, 'status': 'Occupied'},
+    {'id': 'T3', 'seats': 4, 'status': 'Available'},
+    {'id': 'T4', 'seats': 6, 'status': 'Reserved'},
+    {'id': 'T5', 'seats': 2, 'status': 'Available'},
+    {'id': 'T6', 'seats': 8, 'status': 'Occupied'},
+  ];
+
+  void _showAddTableDialog() {
+    final TextEditingController idController = TextEditingController();
+    final TextEditingController seatsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Add New Table',
+            style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: idController,
+                decoration: InputDecoration(
+                  labelText: 'Table ID (e.g., T7)',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: seatsController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Number of Seats',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (idController.text.isNotEmpty && seatsController.text.isNotEmpty) {
+                  setState(() {
+                    _tables.add({
+                      'id': idController.text,
+                      'seats': int.tryParse(seatsController.text) ?? 2,
+                      'status': 'Available',
+                    });
+                  });
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Table ${idController.text} added successfully!')),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Table & Seat Management',
+              style: GoogleFonts.inter(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade800,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: _showAddTableDialog,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Table'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Expanded(
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 250,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.1,
+            ),
+            itemCount: _tables.length,
+            itemBuilder: (context, index) {
+              final table = _tables[index];
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey.withValues(alpha: 0.1), spreadRadius: 2, blurRadius: 8, offset: const Offset(0, 4)),
+                  ],
+                  border: Border.all(
+                    color: _getTableColor(table['status']).withValues(alpha: 0.5),
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.table_restaurant,
+                      size: 48,
+                      color: _getTableColor(table['status']),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Table ${table['id']}',
+                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${table['seats']} Seats',
+                      style: GoogleFonts.inter(color: Colors.grey.shade600),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: _getTableColor(table['status']).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        table['status'],
+                        style: TextStyle(
+                          color: _getTableColor(table['status']),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Color _getTableColor(String status) {
+    switch (status) {
+      case 'Available':
+        return Colors.green;
+      case 'Occupied':
+        return Colors.red;
+      case 'Reserved':
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
+  }
+}

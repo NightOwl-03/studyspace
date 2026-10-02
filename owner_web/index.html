@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySpace Owner Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 id="sidebar-business-name" style="font-size: 16px; margin-top: 5px;">—</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-target="overview-section">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Overview</span>
+                </li>
+                <li data-target="reservations-section">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span>Reservations</span>
+                    <span id="res-badge" class="nav-badge" style="display: none;">0</span> <!-- Dugangi ni -->
+                </li>
+                <li data-target="reviews-section">
+                    <i class="fa-regular fa-star"></i>
+                    <span>Reviews</span>
+                </li>
+                <li data-target="tables-section">
+                    <i class="fa-solid fa-chair"></i>
+                    <span>Tables</span>
+                </li>
+                <li data-target="analytics-section">
+                    <i class="fa-solid fa-chart-simple"></i>
+                    <span>Analytics</span>
+                </li>
+                <li data-target="messages-section">
+                    <i class="fa-regular fa-comment-dots"></i>
+                    <span>Messages</span>
+                    <span id="msg-badge" class="nav-badge" style="display: none;">0</span> <!-- Dugangi ni -->
+                </li>
+                <li data-target="profile-section">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Profile</span>
+                </li>
+                <li id="logout-btn" style="margin-top: auto; color: var(--danger-color);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <button id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+                <h2>Owner Dashboard</h2>
+                <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+            </header>
+
+            <!-- Sections Container -->
+            <div class="sections-wrapper">
+                
+                <!-- Overview Section -->
+                <section id="overview-section" class="content-section active">
+                    <h1 class="section-title">Dashboard Overview</h1>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon blue">
+                                <i class="fa-solid fa-chair"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Total Seats Reserved</span>
+                                <span class="metric-value">—</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon green">
+                                <i class="fa-regular fa-calendar"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Today's Reservations</span>
+                                <span class="metric-value">—</span>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon orange">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Available Capacity</span>
+                                <span class="metric-value">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card occupancy-card">
+                        <h3 class="card-title">Live Seat Occupancy</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: 0%;"></div>
+                        </div>
+                        <div class="occupancy-stats">
+                            <span class="occupied-text">Loading...</span>
+                            <span class="available-text">Loading...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reservations Section -->
+                <section id="reservations-section" class="content-section">
+                    <div class="section-header">
+                        <h1 class="section-title">Reservations</h1>
+                        <button class="btn btn-primary"><i class="fa-solid fa-download"></i> Export CSV</button>
+                    </div>
+                    
+                    <div class="search-container">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="search-reservations" placeholder="Search by name or email...">
+                    </div>
+                    
+                    <div class="table-container card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Reference #</th>
+                                    <th>Customer</th>
+                                    <th>Email Address</th>
+                                    <th>Date & Time</th>
+                                    <th>Seats</th>
+                                    <th>Table</th>
+                                    <th>Status</th>
+                                    <th>Message</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservations-tbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Reviews Section -->
+                <section id="reviews-section" class="content-section">
+                    <h1 class="section-title">Customer Reviews</h1>
+                    <div id="reviews-container">
+                        <!-- Populated via JS -->
+                    </div>
+                </section>
+
+                <!-- Tables Section -->
+               <section id="tables-section" class="content-section">
+                <div class="section-header">
+                    <h1 class="section-title">Table & Seat Management</h1>
+                    <div class="table-controls" style="display: flex; gap: 10px; align-items: center;">
+                        <div class="view-toggles">
+                            <button class="btn btn-icon active" id="grid-view-btn" title="Grid View">
+                                <i class="fa-solid fa-grip"></i>
+                            </button>
+                            <button class="btn btn-icon" id="list-view-btn" title="List View">
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" id="add-table-btn">
+                            <i class="fa-solid fa-plus"></i> Add Table
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tables-container grid-view" id="tables-grid">
+                    </div>
+            </section>
+                <!-- Messages Section -->
+                <section id="messages-section" class="content-section">
+                    <h1 class="section-title">Messages</h1>
+                    <div class="messages-layout">
+                        <div class="conversations-list card" id="conversations-list">
+                            <div class="conversations-header">
+                                <h3>Conversations</h3>
+                                <div class="search-container" style="margin:0;">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="search-conversations" placeholder="Search customers...">
+                                </div>
+                            </div>
+                            <div id="conversation-items">
+                                <div class="empty-state" style="padding:32px;text-align:center;color:var(--text-secondary);">
+                                    <i class="fa-regular fa-comment-dots" style="font-size:32px;margin-bottom:8px;display:block;"></i>
+                                    <p>No conversations yet.</p>
+                                    <p style="font-size:12px;">Messages from customers will appear here.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-window card" id="chat-window">
+                            <div class="chat-placeholder">
+                                <i class="fa-regular fa-comment-dots"></i>
+                                <p>Select a conversation to start messaging</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Profile Section -->
+                <section id="profile-section" class="content-section">
+                    <h1 class="section-title">Profile & Business Settings</h1>
+                    <div class="profile-layout">
+
+                        <!-- Owner Info Card -->
+                        <div class="card profile-card">
+                            <div class="profile-avatar-wrapper">
+                                <div class="profile-avatar" id="profile-avatar-display">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <label class="avatar-upload-btn" for="profile-pic-input">
+                                    <i class="fa-solid fa-camera"></i> Change Photo
+                                </label>
+                                <input type="file" id="profile-pic-input" accept="image/*" style="display:none;">
+                            </div>
+                            <div class="profile-info-form">
+                                <h3 style="margin-bottom:16px;font-size:15px;font-weight:600;">Profile Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Name</label>
+                                        <input type="text" id="profile-owner-name" class="form-control" placeholder="Your full name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" id="profile-email" class="form-control" placeholder="your@email.com" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="text" id="profile-phone" class="form-control" placeholder="+63 XXX XXX XXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Business Name</label>
+                                        <input type="text" id="profile-business-name" class="form-control" placeholder="Shop name">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="save-owner-profile-btn" style="margin-top:8px;">
+                                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                                </button>
+                                <p id="profile-save-msg" style="font-size:13px;margin-top:8px;display:none;"></p>
+                            </div>
+                        </div>
+
+                        <!-- Business Details Card -->
+                        <div class="card profile-card">
+                            <h3 style="margin-bottom:16px;font-size:15px;font-weight:600;">Business Details</h3>
+                            <div class="form-group">
+                                <label class="form-label">Business Name</label>
+                                <input type="text" id="shop-name" class="form-control" placeholder="e.g. Green Coffee Study Hub">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="shop-description" class="form-control" rows="3" placeholder="Describe your study spot..."></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Opening Time</label>
+                                    <input type="time" id="shop-opening" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Closing Time</label>
+                                    <input type="time" id="shop-closing" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <input type="text" id="shop-address" class="form-control" placeholder="Full address">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Contact Email</label>
+                                <input type="email" id="shop-email" class="form-control" placeholder="shop@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Contact Phone</label>
+                                <input type="text" id="shop-phone" class="form-control" placeholder="+63 XXX XXX XXXX">
+                            </div>
+                            <button class="btn btn-primary" id="save-shop-details-btn" style="margin-top:8px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Business Details
+                            </button>
+                            <p id="shop-save-msg" style="font-size:13px;margin-top:8px;display:none;"></p>
+                        </div>
+
+                        <!-- Shop Photos Card -->
+                        <div class="card profile-card shop-photos-card">
+                            <h3 style="margin-bottom:16px;font-size:15px;font-weight:600;">Business Photos</h3>
+                            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Upload photos of your study spot to attract more customers.</p>
+                            <label class="photo-upload-area" for="shop-photos-input" id="photo-drop-zone">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:28px;color:var(--primary-color);margin-bottom:8px;display:block;"></i>
+                                <span>Click to upload photos</span>
+                                <span style="font-size:12px;color:var(--text-secondary);display:block;margin-top:4px;">JPG, PNG up to 5MB each</span>
+                            </label>
+                            <input type="file" id="shop-photos-input" accept="image/*" multiple style="display:none;">
+                            <div class="shop-photos-grid" id="shop-photos-grid">
+                                <!-- Photo thumbnails populated via JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics-section" class="content-section">
+                    <h1 class="section-title">Analytics & Trends</h1>
+                    <div class="charts-grid">
+                        <div class="card chart-card">
+                            <h3 class="card-title">Weekly Reservations</h3>
+                            <div class="chart-container">
+                                <canvas id="weeklyChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card chart-card">
+                            <h3 class="card-title">Peak Hours (Today)</h3>
+                            <div class="chart-container">
+                                <canvas id="peakHoursChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Adding Table -->
+    <div id="add-table-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Table</h2>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label style="font-size:13px;color:#666;margin-bottom:6px;display:block;">Table Number</label>
+                    <input type="text" id="new-table-id" class="form-control" placeholder="e.g. T3 or 3">
+                </div>
+                <div class="form-group">
+                    <label style="font-size:13px;color:#666;margin-bottom:6px;display:block;">Number of Seats</label>
+                    <input type="number" id="new-table-seats" class="form-control" placeholder="e.g. 4" min="1">
+                </div>
+                <p id="add-table-error" style="color:#e53935;font-size:13px;margin-top:8px;display:none;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-text" id="cancel-add-table">Cancel</button>
+                <button class="btn btn-primary" id="confirm-add-table">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
